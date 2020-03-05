@@ -238,7 +238,7 @@
         <Button
             android:id="@+id/btnDepositar"
             android:layout_height="40dp"
-            android:layout_width="160dp"
+            android:layout_width="170dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="15dp"
@@ -250,7 +250,7 @@
 
         <Button
             android:id="@+id/btnSaqueMax"
-            android:layout_width="160dp"
+            android:layout_width="170dp"
             android:layout_height="40dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="40dp"
@@ -262,15 +262,29 @@
 
         <Button
             android:id="@+id/btnSaqueDefinido"
-            android:layout_width="160dp"
+            android:layout_width="170dp"
             android:layout_height="40dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
+            android:layout_marginStart="18dp"
+            app:layout_goneMarginEnd="15dp"
             android:text="@string/btnSaqueDef"
 
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnDepositar" />
+
+        <Button
+            android:id="@+id/btnListarhistorico"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="18dp"
+            android:text="@string/mostrar_historico"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/btnSaqueMax" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -283,12 +297,21 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/ViewNotas"
+            android:id="@+id/viewNotas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="lblNotas100,lblNotas50,lblNotas20,lblNotas10,lblNotas5,txtnNotas100,txtnNotas50,txtnNotas20,txtnNotas10,txtnNotas5" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listHistorico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/btnSaqueDefinido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

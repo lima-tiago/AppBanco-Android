@@ -6,8 +6,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
@@ -17,7 +20,9 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val historicoLocal = HistoricoOperacoes()
     private var valorAtual = 0.0
+    private var valorAntigo = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +55,14 @@ class MainActivity : AppCompatActivity() {
             txtSaque.setText("0")
         }
 
+        btnListarhistorico?.setOnClickListener {
+            listHistorico.visibility = View.VISIBLE
+            listHistorico.adapter = AdaptadorDeLancamentos(historicoLocal.historico)
+            listHistorico.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        }
 
         txtDeposito.addTextChangedListener( MoneyTextWatcher(txtDeposito))
         txtSaque.addTextChangedListener(MoneyTextWatcher(txtSaque))
-
 
     }
 
@@ -69,8 +78,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateSaldo() {
-
-
         txtSaldo.text = formatSaldo(valorAtual).format()
     }
 
@@ -85,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun mostrarEsconder() {
-        ViewNotas.visibility = View.VISIBLE
+        viewNotas.visibility = View.VISIBLE
     }
 
     private fun verificarSaldo(valor: Double): Boolean {
@@ -93,7 +100,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun depositar(deposito: Double) {
+        valorAntigo = valorAtual
         valorAtual += deposito
+        registrarDeposito(deposito)
     }
 
     private fun debitar(debito: Double) {
@@ -135,13 +144,25 @@ class MainActivity : AppCompatActivity() {
 
             NumeroNotasAtual = qtdNotas(valorSaque,5)
             txtnNotas5.text = NumeroNotasAtual.toString()
-//7121
+
+            valorAntigo = valorAtual
             debitar(valor)
+            registrarSaque(valor)
             updateSaldo()
             mostrarEsconder()
         } else {
             aviso("Saldo Infuficiente para saque.")
         }
+    }
+
+    fun registrarSaque(valor: Double){
+        val operacaoFinanceira = OperacaoFinanceira(valorAtual,valorAntigo,valor,"saque")
+        historicoLocal.historico.add(operacaoFinanceira)
+    }
+
+    fun registrarDeposito(valor: Double){
+        val operacaoFinanceira = OperacaoFinanceira(valorAtual,valorAntigo,valor,"deposito")
+        historicoLocal.historico.add(operacaoFinanceira)
     }
 }
 
