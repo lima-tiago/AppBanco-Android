@@ -23,7 +23,11 @@ class AdaptadorDeLancamentos(val listaLancamentos: List<OperacaoFinanceira>): Re
 
     class LancamentoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bindLancamento(operacaoFinanceira: OperacaoFinanceira) {
-            itemView.findViewById<TextView>(R.id.txtSaldoAtual).text = operacaoFinanceira.saldoDepois.toString()
+            itemView.findViewById<TextView>(R.id.txtSaldoAtual).text = operacaoFinanceira.saldoDepois
+            itemView.findViewById<TextView>(R.id.txtOperacao).text = operacaoFinanceira.tipoOperacao
+            itemView.findViewById<TextView>(R.id.txtSaldoAntigo).text = operacaoFinanceira.saldoAntes
+            itemView.findViewById<TextView>(R.id.txtValorOperacao).text = operacaoFinanceira.valorOperacao
+            itemView.findViewById<TextView>(R.id.dateOperacao).text = operacaoFinanceira.data
         }
 
     }

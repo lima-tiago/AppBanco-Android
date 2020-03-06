@@ -1,12 +1,11 @@
 package com.example.bancosaqueapp
 
 data class OperacaoFinanceira(
-    var saldoDepois:Double = 0.0,
-    var saldoAntes:Double,
-    var valorOperacao:Double,
+    var data:String,
+    var saldoDepois:String,
+    var saldoAntes:String,
+    var valorOperacao:String,
     var tipoOperacao:String
-
-
 )
 
 class HistoricoOperacoes{

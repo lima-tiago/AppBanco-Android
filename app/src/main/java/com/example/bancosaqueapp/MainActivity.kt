@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -40,7 +40,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSaqueDefinido?.setOnClickListener {
-            if (transacaoMinima(currencyFormatDouble(txtSaque.text.toString()))) {
+            var valor = currencyFormatDouble(txtSaque.text.toString())
+            if (transacaoMinima(valor) && verificarSaldo(valor)) {
                 debitar(currencyFormatDouble(txtSaque.text.toString()))
                 updateSaldo()
                 txtSaque.setText("0")
@@ -56,9 +57,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnListarhistorico?.setOnClickListener {
+            historicoLocal.historico.sortByDescending { it.data }
             listHistorico.visibility = View.VISIBLE
             listHistorico.adapter = AdaptadorDeLancamentos(historicoLocal.historico)
             listHistorico.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        }
+
+        txtDeposito.setOnClickListener{
+            txtDeposito.setSelection(txtDeposito.text.length)
+        }
+
+        txtSaque.setOnClickListener {
+            txtSaque.setSelection(txtSaque.text.length)
         }
 
         txtDeposito.addTextChangedListener( MoneyTextWatcher(txtDeposito))
@@ -78,10 +88,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateSaldo() {
-        txtSaldo.text = formatSaldo(valorAtual).format()
+        txtSaldo.text = currencyFormatString(valorAtual).format()
     }
 
-    private fun formatSaldo(saldo: Double): String {
+    private fun currencyFormatString(saldo: Double): String {
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt","BR")).format(saldo).toString()
 
         return currencyFormat
@@ -106,7 +116,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun debitar(debito: Double) {
+        valorAntigo = valorAtual
         valorAtual -= debito
+        registrarSaque(debito)
     }
 
     private fun qtdNotas(valorSaque: Double, cifra: Int): Int {
@@ -155,13 +167,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun getDateTme(): String {
+        val date = Calendar.getInstance().time
+        var format = SimpleDateFormat("dd/mm/yyyy hh:mm:ss")
+        return format.format(date).toString()
+    }
+
     fun registrarSaque(valor: Double){
-        val operacaoFinanceira = OperacaoFinanceira(valorAtual,valorAntigo,valor,"saque")
+        val operacaoFinanceira = OperacaoFinanceira(getDateTme(),currencyFormatString(valorAtual),currencyFormatString(valorAntigo),currencyFormatString(valor),"saque")
         historicoLocal.historico.add(operacaoFinanceira)
     }
 
     fun registrarDeposito(valor: Double){
-        val operacaoFinanceira = OperacaoFinanceira(valorAtual,valorAntigo,valor,"deposito")
+        val operacaoFinanceira = OperacaoFinanceira(getDateTme(),currencyFormatString(valorAtual),currencyFormatString(valorAntigo),currencyFormatString(valor),"deposito")
         historicoLocal.historico.add(operacaoFinanceira)
     }
 }
